@@ -33,11 +33,13 @@ run YourApp
 ```
 
 #### Lotus
+
 You can read about rails middleware in their [guide](http://lotusrb.org/guides/actions/rack-integration/).
 
 In `config.ru`, same as a [Rack app](#rack-app).
 
 #### Rails
+
 You can read about rails middleware in their [guide](http://guides.rubyonrails.org/rails_on_rack.html).
 
 ```ruby
@@ -61,7 +63,7 @@ run `rake spec` to run the tests.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/acornsgrow/rack_health.
+Bug reports and pull requests are welcome on GitHub at https://github.com/acornsgrow/rack-vitals.
 
 This project is intended to be a safe, welcoming space for collaboration, and
 contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
