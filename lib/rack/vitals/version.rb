@@ -1,5 +1,5 @@
 module Rack
-  module Vitals
+  class Vitals
     VERSION = "0.1.0"
   end
 end
