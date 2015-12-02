@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.com/Acornsgrow/rack-vitals.svg?token=4fvrruF3QcAS3qNYjLiE)](https://travis-ci.com/Acornsgrow/rack-vitals)
+[![Code Climate](https://codeclimate.com/repos/565f493f9769c16d57000dfa/badges/faec219f166eb3cb676e/gpa.svg)](https://codeclimate.com/repos/565f493f9769c16d57000dfa/feed)
+[![Test Coverage](https://codeclimate.com/repos/565f493f9769c16d57000dfa/badges/faec219f166eb3cb676e/coverage.svg)](https://codeclimate.com/repos/565f493f9769c16d57000dfa/coverage)
+
 # Rack::Vitals
 
 Vitals is a gem that adds rack middleware to your rack applications for
