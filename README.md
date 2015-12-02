@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Acornsgrow/rack-vitals.svg?token=4fvrruF3QcAS3qNYjLiE&branch=add_code_climate)](https://travis-ci.com/Acornsgrow/rack-vitals)
+[![Build Status](https://travis-ci.com/Acornsgrow/rack-vitals.svg?token=4fvrruF3QcAS3qNYjLiE)](https://travis-ci.com/Acornsgrow/rack-vitals)
 # Rack::Vitals
 
 Vitals is a gem that adds rack middleware to your rack applications for
