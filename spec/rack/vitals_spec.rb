@@ -91,4 +91,11 @@ describe Rack::Vitals do
       end
     end
   end
+
+  describe ".register_checks" do
+    it "passes the block to the check registrar" do
+      expect(Rack::Vitals::CheckRegistrar).to receive(:register)
+      Rack::Vitals.register_checks
+    end
+  end
 end
