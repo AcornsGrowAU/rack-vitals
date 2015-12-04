@@ -1,6 +1,6 @@
 module Rack
   class Vitals::Check
-    attr_reader :procedure
+    attr_reader :name, :procedure
 
     def initialize(name, &block)
       @name = name

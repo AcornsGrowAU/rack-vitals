@@ -1,6 +1,7 @@
 module Rack
   class Vitals::CheckResult
-    def initialize
+    def initialize(name)
+      @name = name
       @state = :down
     end
 

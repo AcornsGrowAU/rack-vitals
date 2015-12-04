@@ -95,6 +95,78 @@ describe "rack Health middleware" do
     end
   end
 
+  context "when the request is made to '/status'" do
+    before do
+      Rack::Vitals.register_checks do
+        check "foo", critical: true do
+          up_state
+        end
+
+        check "bar" do
+          down_state
+        end
+
+        check "baz" do
+          warn_state
+        end
+      end
+    end
+
+    it "responds with a json object" do
+      expected_body = {
+        foo: {
+          state: :up
+        },
+        bar: {
+          state: :down
+        },
+        baz: {
+          state: :warn
+        }
+      }.to_json
+      get "/status"
+      expect(last_response.status).to eql(200)
+      expect(last_response.headers).to include({ "Content-Length" => "68", "Content-type" => "application/json" })
+      expect(last_response.body).to eql(expected_body)
+    end
+  end
+
+  context "when the request is made to '/status/'" do
+    before do
+      Rack::Vitals.register_checks do
+        check "foo", critical: true do
+          up_state
+        end
+
+        check "bar" do
+          down_state
+        end
+
+        check "baz" do
+          warn_state
+        end
+      end
+    end
+
+    it "responds with a json object" do
+      expected_body = {
+        foo: {
+          state: :up
+        },
+        bar: {
+          state: :down
+        },
+        baz: {
+          state: :warn
+        }
+      }.to_json
+      get "/status/"
+      expect(last_response.status).to eql(200)
+      expect(last_response.headers).to include({ "Content-Length" => "68", "Content-type" => "application/json" })
+      expect(last_response.body).to eql(expected_body)
+    end
+  end
+
   context "when the request is made to any other path" do
     it "passes the request through the middleware to the rest of the app" do
       get "/foo"

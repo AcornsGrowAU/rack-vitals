@@ -8,7 +8,8 @@ require "rack"
 
 module Rack
   class Vitals
-    PATH_NAMES = ["/health", "/health/"]
+    HEALTH_PATH_NAMES = ["/health", "/health/"]
+    STATUS_PATH_NAMES = ["/status", "/status/"]
 
     def initialize(app)
       @app = app
@@ -18,13 +19,19 @@ module Rack
       request = Rack::Request.new(env)
       if self.requested_health_path?(request.path)
         return self.health_vitals_response
+      elsif self.requested_status_path?(request.path)
+        return self.status_vitals_response
       else
         return @app.call(env)
       end
     end
 
     def requested_health_path?(request_path)
-      return PATH_NAMES.include?(request_path)
+      return HEALTH_PATH_NAMES.include?(request_path)
+    end
+
+    def requested_status_path?(request_path)
+      return STATUS_PATH_NAMES.include?(request_path)
     end
 
     def self.register_checks &block
@@ -42,6 +49,12 @@ module Rack
       else
         return [503, {}, ["Service Unavailable"]]
       end
+    end
+
+    def status_vitals_response
+      detector = ::Rack::Vitals::Detector.new
+      response_body = detector.generate_status_response
+      return [200, { "Content-type" => "application/json" }, [response_body]]
     end
   end
 end

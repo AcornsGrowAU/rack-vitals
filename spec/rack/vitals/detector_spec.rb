@@ -53,4 +53,82 @@ describe ::Rack::Vitals::Detector do
       end
     end
   end
+
+  describe "#generate_status_response" do
+    let(:check) { instance_double ::Rack::Vitals::Check }
+    let(:check_collection) { [check] }
+    let(:check_evaluator) { instance_double ::Rack::Vitals::CheckEvaluator }
+    let(:response_body) { { foo: { state: :up }, bar: { state: :down } } }
+
+    before do
+      allow(::Rack::Vitals::CheckRegistrar).to receive(:all_checks).and_return(check_collection)
+      allow(::Rack::Vitals::CheckEvaluator).to receive(:new).and_return(check_evaluator)
+      allow(check_evaluator).to receive(:run).and_return check_evaluator
+      allow(subject).to receive(:add_formatted_check_to_response_body).with(check_evaluator)
+      allow(subject).to receive(:response_body).and_return(response_body)
+    end
+
+    it "gets all the required checks for status" do
+      expect(::Rack::Vitals::CheckRegistrar).to receive(:all_checks)
+      subject.generate_status_response
+    end
+
+    it "iterates over each check" do
+      expect(check_collection).to receive(:each)
+      subject.generate_status_response
+    end
+
+    it "creates a new check evaluator with the yielded check" do
+      expect(::Rack::Vitals::CheckEvaluator).to receive(:new).with(check)
+      subject.generate_status_response
+    end
+
+    it "runs the check evaluator" do
+      expect(check_evaluator).to receive(:run).and_return check_evaluator
+      subject.generate_status_response
+    end
+
+    it "formats the check results for the response body" do
+      expect(subject).to receive(:add_formatted_check_to_response_body).with(check_evaluator)
+      subject.generate_status_response
+    end
+
+    it "converts the response body as json" do
+      expect(response_body).to receive(:to_json)
+      subject.generate_status_response
+    end
+  end
+
+  describe "#add_formatted_check_to_response_body" do
+    let(:check_evaluator) { instance_double ::Rack::Vitals::CheckEvaluator, name: :foo, state: :up }
+
+    it "adds the formatted hash to the response body" do
+      expect(subject.response_body).to receive(:merge!).with({ foo: { state: :up } })
+      subject.add_formatted_check_to_response_body(check_evaluator)
+    end
+
+    it "adds to an existing response" do
+      allow(subject).to receive(:response_body).and_return({ bar: { state: :down } })
+      expected_response_body = { foo: { state: :up }, bar: { state: :down }}
+      result = subject.add_formatted_check_to_response_body(check_evaluator)
+      expect(result).to include(expected_response_body)
+    end
+  end
+
+  describe "#response_body" do
+    context "when it's called for the first time" do
+      it "creates an empty hash" do
+        result = subject.response_body
+        expect(result).to eql({})
+      end
+    end
+
+    context "when it's called multiple times" do
+      it "returns the memoized hash" do
+        subject.response_body.merge!({ foo: "stuff"})
+        result = subject.response_body
+        expect(result).to eql({ foo: "stuff"} )
+      end
+    end
+  end
 end
