@@ -13,6 +13,11 @@ describe "rack Health middleware" do
     end
   end
 
+  after do
+    Rack::Vitals.register_checks do
+    end
+  end
+
   context "when the request is made to '/health'" do
     it "responds to the request that it's healthy" do
       get "/health"
@@ -23,7 +28,8 @@ describe "rack Health middleware" do
     context "when the app has a working critical dependency" do
       before do
         Rack::Vitals.register_checks do
-          check "some dependancy", critical: true do
+          check "some dependency", critical: true do
+            up_state
           end
         end
       end
@@ -34,6 +40,39 @@ describe "rack Health middleware" do
         expect(last_response.body).to eql("OK")
       end
     end
+
+    context "when the app has a critical dependency in a warn state" do
+      before do
+        Rack::Vitals.register_checks do
+          check "some dependency", critical: true do
+            warn_state
+          end
+        end
+      end
+
+      it "responds to the request that is not healthy" do
+        get "/health"
+        expect(last_response.status).to eql(200)
+        expect(last_response.body).to eql("OK")
+      end
+    end
+
+    context "when the app has a broken critical dependency" do
+      before do
+        Rack::Vitals.register_checks do
+          check "some dependency", critical: true do
+            down_state
+          end
+        end
+      end
+
+      it "responds to the request that is not healthy" do
+        get "/health"
+        expect(last_response.status).to eql(503)
+        expect(last_response.body).to eql("")
+      end
+    end
+
   end
 
   context "when the request is made to '/health/'" do

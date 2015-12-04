@@ -55,4 +55,38 @@ describe Rack::Vitals::CheckRegistrar do
       end
     end
   end
+
+  describe ".critical_checks" do
+    context "when there are critical checks" do
+      it "returns the collection of registered critical checks" do
+        check = instance_double Rack::Vitals::Check
+        described_class.instance_variable_set(:@critical_checks, [check])
+        expect(described_class.critical_checks).to match_array([check])
+      end
+    end
+
+    context "when there hasn't been any critical checks registered" do
+      it "returns an empty array" do
+        result = described_class.critical_checks
+        expect(result).to match_array([])
+      end
+    end
+  end
+
+  describe ".all_checks" do
+    context "when there are critical checks" do
+      it "returns the collection of all registered checks" do
+        check = instance_double Rack::Vitals::Check
+        described_class.instance_variable_set(:@all_checks, [check])
+        expect(described_class.all_checks).to match_array([check])
+      end
+    end
+
+    context "when there hasn't been any checks registered" do
+      it "returns an empty array" do
+        result = described_class.all_checks
+        expect(result).to match_array([])
+      end
+    end
+  end
 end

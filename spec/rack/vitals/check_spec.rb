@@ -1,6 +1,12 @@
 require "spec_helper"
 
 describe Rack::Vitals::Check do
+  subject do
+    ::Rack::Vitals::Check.new "check name" do
+      "some check" == "some check"
+    end
+  end
+
   describe "#initalize" do
     it "saves the given name" do
       result = described_class.new("some name")
@@ -10,7 +16,16 @@ describe Rack::Vitals::Check do
     it "saves the given block" do
       block = Proc.new {}
       result = described_class.new("some name", &block)
-      expect(result.instance_variable_get(:@check)).to eql block
+      expect(result.instance_variable_get(:@procedure)).to eql block
+    end
+  end
+
+  describe "#procedure" do
+    it "returns the procedure that belongs to the check" do
+      block = Proc.new {}
+      check = described_class.new("some name", &block)
+      result = check.procedure
+      expect(result).to eql block
     end
   end
 end

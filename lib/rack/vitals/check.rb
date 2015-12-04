@@ -1,8 +1,10 @@
 module Rack
   class Vitals::Check
+    attr_reader :procedure
+
     def initialize(name, &block)
       @name = name
-      @check = block
+      @procedure = block
     end
   end
 end

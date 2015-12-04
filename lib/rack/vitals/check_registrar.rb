@@ -13,5 +13,13 @@ module Rack
         @critical_checks << new_check
       end
     end
+
+    def self.critical_checks
+      return @critical_checks ||= Array.new
+    end
+
+    def self.all_checks
+      return @all_checks ||= Array.new
+    end
   end 
 end
