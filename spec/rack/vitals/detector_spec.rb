@@ -28,7 +28,7 @@ describe ::Rack::Vitals::Detector do
       subject.critical_checks_healthy?
     end
 
-    it "acitvates the check evaluator" do
+    it "activates the check evaluator" do
       expect(check_evaluator).to receive(:run).and_return check_evaluator
       subject.critical_checks_healthy?
     end

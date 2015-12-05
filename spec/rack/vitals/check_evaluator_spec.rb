@@ -13,7 +13,7 @@ describe ::Rack::Vitals::CheckEvaluator do
   end
 
   describe "#run" do
-    it "calls the checks block" do
+    it "calls the check's block" do
       expect(subject.instance_variable_get(:@check)).to receive(:procedure)
       subject.run
     end

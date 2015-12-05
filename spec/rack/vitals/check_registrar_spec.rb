@@ -6,16 +6,6 @@ describe Rack::Vitals::CheckRegistrar do
   end
 
   describe ".register" do
-    it "creates the status check storage" do
-      described_class.register {}
-      expect(described_class.instance_variable_get(:@all_checks)).to eq []
-    end
-
-    it "creates the health check storage" do
-      described_class.register {}
-      expect(described_class.instance_variable_get(:@critical_checks)).to eq []
-    end
-
     it "executes the given block in the context of the class" do
       expect(described_class).to receive(:class_eval)
       described_class.register

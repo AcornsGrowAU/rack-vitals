@@ -4,18 +4,16 @@ require 'rack/test'
 describe "rack Health middleware" do
   include Rack::Test::Methods
 
-  before do
-    def app
-      Rack::Builder.app do
-        use Rack::Vitals
-        run lambda { |env| [123, {}, ["foo"]] }
-      end
+  def app
+    Rack::Builder.app do
+      use Rack::Vitals
+      run lambda { |env| [123, {}, ["foo"]] }
     end
   end
 
   after do
-    Rack::Vitals.register_checks do
-    end
+    ::Rack::Vitals::CheckRegistrar.instance_variable_set(:@critical_checks, nil)
+    ::Rack::Vitals::CheckRegistrar.instance_variable_set(:@all_check, nil)
   end
 
   context "when the request is made to '/health'" do
@@ -50,7 +48,7 @@ describe "rack Health middleware" do
         end
       end
 
-      it "responds to the request that is not healthy" do
+      it "responds to the request that it's healthy" do
         get "/health"
         expect(last_response.status).to eql(200)
         expect(last_response.body).to eql("OK")
@@ -72,7 +70,6 @@ describe "rack Health middleware" do
         expect(last_response.body).to eql("")
       end
     end
-
   end
 
   context "when the request is made to '/health/'" do
