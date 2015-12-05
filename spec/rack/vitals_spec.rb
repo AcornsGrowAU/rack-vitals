@@ -137,7 +137,7 @@ describe Rack::Vitals do
       it "returns an unhealthy response" do
         allow(detector).to receive(:critical_checks_healthy?).and_return false
         result = subject.health_vitals_response
-        expect(result).to match_array [503, {}, []]
+        expect(result).to match_array [503, {}, ["Service Unavailable"]]
       end
     end
   end

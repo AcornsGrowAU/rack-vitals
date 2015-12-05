@@ -67,7 +67,7 @@ describe "rack Health middleware" do
       it "responds to the request that is not healthy" do
         get "/health"
         expect(last_response.status).to eql(503)
-        expect(last_response.body).to eql("")
+        expect(last_response.body).to eql("Service Unavailable")
       end
     end
   end

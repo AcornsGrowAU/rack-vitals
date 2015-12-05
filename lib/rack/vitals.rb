@@ -35,7 +35,7 @@ module Rack
       if detector.critical_checks_healthy?
         return [200, {}, ["OK"]]
       else
-        return [503, {}, []]
+        return [503, {}, ["Service Unavailable"]]
       end
     end
   end

@@ -9,14 +9,14 @@ describe Rack::Vitals::Check do
 
   describe "#initalize" do
     it "saves the given name" do
-      result = described_class.new("some name")
-      expect(result.instance_variable_get(:@name)).to eql "some name"
+      check = described_class.new("some name")
+      expect(check.instance_variable_get(:@name)).to eql "some name"
     end
     
     it "saves the given block" do
       block = Proc.new {}
-      result = described_class.new("some name", &block)
-      expect(result.instance_variable_get(:@procedure)).to eql block
+      check = described_class.new("some name", &block)
+      expect(check.instance_variable_get(:@procedure)).to eql block
     end
   end
 
