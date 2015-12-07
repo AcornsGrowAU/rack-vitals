@@ -5,7 +5,7 @@ module Rack
       critical.each do |check|
         check_evaluator = ::Rack::Vitals::CheckEvaluator.new(check)
         check_evaluator.run
-        return false if check_evaluator.down_state?
+        return false if check_evaluator.down?
       end
       return true
     end

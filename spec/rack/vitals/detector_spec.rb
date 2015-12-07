@@ -10,7 +10,7 @@ describe ::Rack::Vitals::Detector do
       allow(::Rack::Vitals::CheckRegistrar).to receive(:critical_checks).and_return(check_collection)
       allow(::Rack::Vitals::CheckEvaluator).to receive(:new).and_return(check_evaluator)
       allow(check_evaluator).to receive(:run).and_return check_evaluator
-      allow(check_evaluator).to receive(:down_state?)
+      allow(check_evaluator).to receive(:down?)
     end
 
     it "gets the critical checks from the registrar" do
@@ -35,7 +35,7 @@ describe ::Rack::Vitals::Detector do
 
     context "when the check state is 'down'" do
       it "returns false" do
-        allow(check_evaluator).to receive(:down_state?).and_return true
+        allow(check_evaluator).to receive(:down?).and_return true
         result = subject.critical_checks_healthy?
         expect(result).to be_falsey
       end
@@ -43,7 +43,7 @@ describe ::Rack::Vitals::Detector do
 
     context "when there are no check states that are 'down'" do
       it "returns true" do
-        allow(check_evaluator).to receive(:down_state?).and_return false
+        allow(check_evaluator).to receive(:down?).and_return false
         result = subject.critical_checks_healthy?
         expect(result).to be_truthy
       end

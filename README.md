@@ -57,19 +57,19 @@ config.middleware.use Rack::Vitals
 Rack::Vitals.register_checks do
   check "name of dependency", critical: true do
     if "some logic to check dependency"
-      up_state
+      up
     else
-      down_state
+      down
     end
   end
 
   check "name of dependency" do
     if "some logic to check dependency"
-      up_state
+      up
     elsif "some other logic"
-      warn_state
+      warn
     else
-      down_state
+      down
     end
   end
 end
@@ -92,23 +92,23 @@ You can define a new check by using the `check` method within the block.
 
   * You can pass an optional argument of `critical: true` to have the check run
   for each `/health` request. This will cause the `/health` request to fail if a
-  `down_state` is reached.
+  `down` is reached.
     ```ruby
     check "name of check here", critical: true do
     end
     ```
 
   * `check` takes a block which defines the logic that you want to run when
-    the check is processed. This block should call `up_state`, `warn_state`,
-    and/or `down_state` based on how you'd like `/status` and `/health` to
+    the check is processed. This block should call `up`, `warn`,
+    and/or `down` based on how you'd like `/status` and `/health` to
     report the checks.
     ```ruby
     check "name", critical: true do
       # Do whatever logic you want to check
       if true
-        up_state
+        up
       else
-        down_state
+        down
       end
     end
     ```

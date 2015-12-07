@@ -1,6 +1,7 @@
 module Rack
   class Vitals::CheckEvaluator
     def initialize(check)
+      @state = :down
       @check = check
     end
 
@@ -9,23 +10,23 @@ module Rack
       begin
         self.instance_eval &procedure
       rescue => e
-        self.down_state
+        self.down
       end
     end
     
-    def up_state
+    def up
       @state = :up
     end
     
-    def warn_state
+    def warn
       @state = :warn
     end
 
-    def down_state
+    def down
       @state = :down
     end
 
-    def down_state?
+    def down?
       @state == :down
     end
   end

@@ -27,7 +27,7 @@ describe "rack Health middleware" do
       before do
         Rack::Vitals.register_checks do
           check "some dependency", critical: true do
-            up_state
+            up
           end
         end
       end
@@ -43,7 +43,7 @@ describe "rack Health middleware" do
       before do
         Rack::Vitals.register_checks do
           check "some dependency", critical: true do
-            warn_state
+            warn
           end
         end
       end
@@ -59,7 +59,7 @@ describe "rack Health middleware" do
       before do
         Rack::Vitals.register_checks do
           check "some dependency", critical: true do
-            down_state
+            down
           end
         end
       end
