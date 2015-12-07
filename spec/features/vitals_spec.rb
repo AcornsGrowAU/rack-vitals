@@ -70,6 +70,22 @@ describe "rack Health middleware" do
         expect(last_response.body).to eql("Service Unavailable")
       end
     end
+
+    context "when the check doesn't define a state for the check to be in" do
+      before do
+        Rack::Vitals.register_checks do
+          check "some dependency", critical: true do
+            # No states defined
+          end
+        end
+      end
+
+      it "responds the the request that is not healthy" do
+        get "/health"
+        expect(last_response.status).to eql(503)
+        expect(last_response.body).to eql("Service Unavailable")
+      end
+    end
   end
 
   context "when the request is made to '/health/'" do
