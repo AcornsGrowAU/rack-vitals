@@ -67,6 +67,22 @@ describe ::Rack::Vitals::Detector do
       allow(subject).to receive(:response_body).and_return(response_body)
     end
 
+    context "when the detector has already generated a response body" do
+      it "resets the response body to be empty" do
+        allow(subject).to receive(:response_body).and_return ["some previous check"]
+        expect(subject).to receive(:reset_response_body)
+        subject.generate_status_response
+      end
+    end
+
+    context "when the detector has not already generated a response body" do
+      it "doesn't reset the response body" do
+        allow(subject).to receive(:response_body).and_return []
+        expect(subject).not_to receive(:reset_response_body)
+        subject.generate_status_response
+      end
+    end
+
     it "gets all the required checks for status" do
       expect(registrar).to receive(:all_checks).and_return(check_collection)
       subject.generate_status_response
@@ -116,6 +132,15 @@ describe ::Rack::Vitals::Detector do
         result = subject.response_body
         expect(result).to eql([{ foo: "stuff" }])
       end
+    end
+  end
+
+  describe "#reset_response_body" do
+    it "resets the response body to an empty hash" do
+      subject.instance_variable_set(:@response_body, ["something here"])
+      subject.reset_response_body
+      result = subject.instance_variable_get(:@response_body)
+      expect(result).to eql []
     end
   end
 end

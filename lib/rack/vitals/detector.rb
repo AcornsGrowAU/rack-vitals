@@ -13,6 +13,7 @@ module Rack
     end
 
     def generate_status_response
+      reset_response_body if response_body.length > 0
       @registrar.all_checks.each do |check|
         check_result = ::Rack::Vitals::CheckEvaluator.run(check)
         add_formatted_check_to_response_body(check_result)
@@ -20,12 +21,16 @@ module Rack
       return response_body.to_json
     end
 
+    def add_formatted_check_to_response_body(check_result)
+      response_body << { name: check_result.name, state: check_result.state }
+    end
+
     def response_body
       @response_body ||= []
     end
 
-    def add_formatted_check_to_response_body(check_result)
-      response_body << { name: check_result.name, state: check_result.state }
+    def reset_response_body
+      @response_body = []
     end
   end
 end
