@@ -1,11 +1,13 @@
 module Rack
   class Vitals::Detector
+    def initialize(registrar)
+      @registrar = registrar
+    end
+
     def critical_checks_healthy?
-      critical = ::Rack::Vitals::CheckRegistrar.critical_checks
-      critical.each do |check|
-        check_evaluator = ::Rack::Vitals::CheckEvaluator.new(check)
-        check_evaluator.run
-        return false if check_evaluator.down?
+      @registrar.critical_checks.each do |check|
+        check_result = ::Rack::Vitals::CheckEvaluator.run(check)
+        return false if check_result.down?
       end
       return true
     end

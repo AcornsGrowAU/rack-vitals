@@ -1,33 +1,14 @@
 module Rack
   class Vitals::CheckEvaluator
-    def initialize(check)
-      @state = :down
-      @check = check
-    end
-
-    def run
-      procedure = @check.procedure
+    def self.run(check)
+      check_result = ::Rack::Vitals::CheckResult.new
+      procedure = check.procedure
       begin
-        self.instance_eval &procedure
+        check_result.instance_eval &procedure
       rescue => e
-        self.down
+        check_result.down
       end
-    end
-    
-    def up
-      @state = :up
-    end
-    
-    def warn
-      @state = :warn
-    end
-
-    def down
-      @state = :down
-    end
-
-    def down?
-      @state == :down
+      return check_result
     end
   end
 end

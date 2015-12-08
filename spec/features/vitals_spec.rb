@@ -12,8 +12,7 @@ describe "rack Health middleware" do
   end
 
   after do
-    ::Rack::Vitals::CheckRegistrar.instance_variable_set(:@critical_checks, nil)
-    ::Rack::Vitals::CheckRegistrar.instance_variable_set(:@all_check, nil)
+    ::Rack::Vitals.instance_variable_set(:@registrar, nil)
   end
 
   context "when the request is made to '/health'" do

@@ -1,6 +1,7 @@
 require "rack/vitals/check"
 require "rack/vitals/check_evaluator"
 require "rack/vitals/check_registrar"
+require "rack/vitals/check_result"
 require "rack/vitals/detector"
 require "rack/vitals/version"
 require "rack"
@@ -27,11 +28,15 @@ module Rack
     end
 
     def self.register_checks &block
-      ::Rack::Vitals::CheckRegistrar.register &block
+      self.registrar.register &block
+    end
+
+    def self.registrar
+      @registrar ||= ::Rack::Vitals::CheckRegistrar.new
     end
 
     def health_vitals_response
-      detector = ::Rack::Vitals::Detector.new
+      detector = ::Rack::Vitals::Detector.new(::Rack::Vitals.registrar)
       if detector.critical_checks_healthy?
         return [200, {}, ["OK"]]
       else

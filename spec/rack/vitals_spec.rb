@@ -101,22 +101,53 @@ describe Rack::Vitals do
   end
 
   describe ".register_checks" do
-    it "passes the block to the check registrar" do
-      expect(Rack::Vitals::CheckRegistrar).to receive(:register)
+    let(:registrar) { instance_double(::Rack::Vitals::CheckRegistrar) }
+
+    before do
+      allow(Rack::Vitals).to receive(:registrar).and_return(registrar)
+      allow(registrar).to receive(:register)
+    end
+
+    it "gets the registrar" do
+      expect(Rack::Vitals).to receive(:registrar)
       Rack::Vitals.register_checks
+    end
+
+    it "registers the give block of checks" do
+      expect(registrar).to receive(:register)
+      Rack::Vitals.register_checks
+    end
+  end
+
+  describe ".registrar" do
+    context "when it's never been called before" do
+      it "creates a new registrar" do
+        expect(::Rack::Vitals::CheckRegistrar).to receive(:new)
+        Rack::Vitals.registrar
+      end
+    end
+
+    context "when it's been called before" do
+      it "returns the previously created registrar" do
+        registrar = Rack::Vitals.registrar
+        result = Rack::Vitals.registrar
+        expect(result).to eql registrar
+      end
     end
   end
 
   describe "#health_vitals_response" do
     let(:detector) { instance_double Rack::Vitals::Detector }
+    let(:registrar) { instance_double ::Rack::Vitals::CheckRegistrar }
 
     before do
       allow(::Rack::Vitals::Detector).to receive(:new).and_return detector
       allow(detector).to receive(:critical_checks_healthy?)
+      allow(::Rack::Vitals).to receive(:registrar).and_return(registrar)
     end
 
     it "creates a new vitals detector" do
-      expect(Rack::Vitals::Detector).to receive(:new)
+      expect(Rack::Vitals::Detector).to receive(:new).with(registrar)
       subject.health_vitals_response
     end
 
