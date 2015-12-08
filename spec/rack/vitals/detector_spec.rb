@@ -59,15 +59,14 @@ describe ::Rack::Vitals::Detector do
     let(:check_collection) { [check] }
     let(:check_result) { instance_double ::Rack::Vitals::CheckResult }
     let(:response_body) { { foo: { state: :up }, bar: { state: :down } } }
-#
+
     before do
       allow(registrar).to receive(:all_checks).and_return(check_collection)
-#      allow(::Rack::Vitals::CheckEvaluator).to receive(:new).and_return(check_evaluator)
       allow(::Rack::Vitals::CheckEvaluator).to receive(:run).and_return check_result
       allow(subject).to receive(:add_formatted_check_to_response_body).with(check_result)
       allow(subject).to receive(:response_body).and_return(response_body)
     end
-#
+
     it "gets all the required checks for status" do
       expect(registrar).to receive(:all_checks).and_return(check_collection)
       subject.generate_status_response
