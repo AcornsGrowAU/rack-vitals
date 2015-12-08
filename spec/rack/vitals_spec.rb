@@ -14,7 +14,7 @@ describe Rack::Vitals do
     end
   end
 
-  describe "#call" do
+  describe "#_call" do
     let(:env) { double }
     let(:request) { double "Request", path: "/somepath" }
 
@@ -26,12 +26,12 @@ describe Rack::Vitals do
     it "creates a rack request" do
       allow(subject).to receive(:requested_health_path?).and_return(true)
       expect(Rack::Request).to receive(:new).with(env).and_return(request)
-      subject.call env
+      subject._call env
     end
 
     it "checks if the requested path is for the health check" do
       expect(subject).to receive(:requested_health_path?).with(request.path).and_return(true)
-      subject.call env
+      subject._call env
     end
 
     context "when the requested path is for the health check" do
@@ -41,19 +41,19 @@ describe Rack::Vitals do
 
       it "gets the health vitals response" do
         expect(subject).to receive(:health_vitals_response)
-        subject.call env
+        subject._call env
       end
       
       it "returns the health vitals response" do
         valid_response = double
         allow(subject).to receive(:health_vitals_response).and_return(valid_response)
-        result = subject.call env
+        result = subject._call env
         expect(result).to eql valid_response
       end
 
       it "does not call the rest of the middleware stack" do
         expect(app).not_to receive(:call)
-        subject.call env
+        subject._call env
       end
     end
 
