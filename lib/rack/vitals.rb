@@ -1,3 +1,8 @@
+require "rack/vitals/check"
+require "rack/vitals/check_evaluator"
+require "rack/vitals/check_registrar"
+require "rack/vitals/check_result"
+require "rack/vitals/detector"
 require "rack/vitals/version"
 require "rack"
 
@@ -12,7 +17,7 @@ module Rack
     def call(env)
       request = Rack::Request.new(env)
       if self.requested_health_path?(request.path)
-        return [200, {}, ["OK"]]
+        return self.health_vitals_response
       else
         return @app.call(env)
       end
@@ -20,6 +25,23 @@ module Rack
 
     def requested_health_path?(request_path)
       return PATH_NAMES.include?(request_path)
+    end
+
+    def self.register_checks &block
+      self.registrar.register &block
+    end
+
+    def self.registrar
+      @registrar ||= ::Rack::Vitals::CheckRegistrar.new
+    end
+
+    def health_vitals_response
+      detector = ::Rack::Vitals::Detector.new(::Rack::Vitals.registrar)
+      if detector.critical_checks_healthy?
+        return [200, {}, ["OK"]]
+      else
+        return [503, {}, ["Service Unavailable"]]
+      end
     end
   end
 end
