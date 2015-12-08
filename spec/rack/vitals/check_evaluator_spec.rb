@@ -40,24 +40,4 @@ describe ::Rack::Vitals::CheckEvaluator do
       expect(result).to eql(check_result)
     end
   end
-
-  describe "#name" do
-    it "replaces the spaces with underscores" do
-      expect(check.name).to receive(:gsub).with(" ", "_").and_call_original
-      subject.name
-    end
-
-    it "returns the name of the check as a symbol" do
-      result = subject.name
-      expect(result).to eql(:check_name)
-    end
-  end
-
-  describe "#state" do
-    it "returns the state of the check" do
-      subject.instance_variable_set(:@state, :up)
-      result = subject.state
-      expect(result).to eql(:up)
-    end
-  end
 end

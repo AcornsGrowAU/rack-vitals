@@ -52,9 +52,9 @@ module Rack
     end
 
     def status_vitals_response
-      detector = ::Rack::Vitals::Detector.new
+      detector = ::Rack::Vitals::Detector.new(::Rack::Vitals.registrar)
       response_body = detector.generate_status_response
-      return [200, { "Content-type" => "application/json" }, [response_body]]
+      return [200, { "Content-Type" => "application/json" }, [response_body]]
     end
   end
 end

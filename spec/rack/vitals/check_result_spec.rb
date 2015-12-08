@@ -16,6 +16,20 @@ describe ::Rack::Vitals::CheckResult do
     end
   end
 
+  describe "#name" do
+    it "returns the name given for the check" do
+      result = subject.name
+      expect(result).to eql "bar"
+    end
+  end
+
+  describe "#state" do
+    it "returns the result state of the check" do
+      result = subject.state
+      expect(result).to eql :down
+    end
+  end
+
   describe "#up" do
     it "sets the check evaluation state to up" do
       subject.up

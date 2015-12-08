@@ -175,15 +175,17 @@ describe Rack::Vitals do
   describe ".registrar" do
     context "when it's never been called before" do
       it "creates a new registrar" do
+        vitals = Class.new ::Rack::Vitals
         expect(::Rack::Vitals::CheckRegistrar).to receive(:new)
-        Rack::Vitals.registrar
+        vitals.registrar
       end
     end
 
     context "when it's been called before" do
       it "returns the previously created registrar" do
-        registrar = Rack::Vitals.registrar
-        result = Rack::Vitals.registrar
+        vitals = Class.new ::Rack::Vitals
+        registrar = vitals.registrar
+        result = vitals.registrar
         expect(result).to eql registrar
       end
     end
@@ -229,14 +231,16 @@ describe Rack::Vitals do
   describe "#status_vitals_response" do
     let(:detector) { instance_double Rack::Vitals::Detector }
     let(:response_body) { double }
+    let(:registrar) { instance_double ::Rack::Vitals::CheckRegistrar }
 
     before do
       allow(::Rack::Vitals::Detector).to receive(:new).and_return detector
       allow(detector).to receive(:generate_status_response).and_return(response_body)
+      allow(::Rack::Vitals).to receive(:registrar).and_return(registrar)
     end
 
     it "creates a new vitals detector" do
-      expect(Rack::Vitals::Detector).to receive(:new)
+      expect(Rack::Vitals::Detector).to receive(:new).with(registrar)
       subject.status_vitals_response
     end
 

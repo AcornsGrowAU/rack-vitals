@@ -13,22 +13,19 @@ module Rack
     end
 
     def generate_status_response
-      all_checks = ::Rack::Vitals::CheckRegistrar.all_checks
-      all_checks.each do |check|
-        check_evaluator = ::Rack::Vitals::CheckEvaluator.new(check)
-        check_evaluator.run
-        add_formatted_check_to_response_body(check_evaluator)
+      @registrar.all_checks.each do |check|
+        check_result = ::Rack::Vitals::CheckEvaluator.run(check)
+        add_formatted_check_to_response_body(check_result)
       end
       return response_body.to_json
     end
 
     def response_body
-      @response_body ||= {}
+      @response_body ||= []
     end
 
-    def add_formatted_check_to_response_body(check_evaluator)
-      formatted_check_status = { check_evaluator.name => { state: check_evaluator.state }}
-      response_body.merge! formatted_check_status
+    def add_formatted_check_to_response_body(check_result)
+      response_body << { name: check_result.name, state: check_result.state }
     end
   end
 end

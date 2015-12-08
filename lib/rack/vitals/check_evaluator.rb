@@ -10,10 +10,6 @@ module Rack
       end
       return check_result
     end
-
-    def name
-      @check.name.gsub(" ", "_").to_sym
-    end
   end
 end
 

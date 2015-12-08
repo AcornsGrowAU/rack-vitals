@@ -99,71 +99,61 @@ describe "rack Health middleware" do
     before do
       Rack::Vitals.register_checks do
         check "foo", critical: true do
-          up_state
+          up
         end
 
         check "bar" do
-          down_state
+          down
         end
 
         check "baz" do
-          warn_state
+          warn
         end
       end
     end
 
     it "responds with a json object" do
-      expected_body = {
-        foo: {
-          state: :up
+      expected_body = [
+        {
+          name: "foo",
+          state: "up"
         },
-        bar: {
-          state: :down
+        {
+          name: "bar",
+          state: "down"
         },
-        baz: {
-          state: :warn
+        {
+          name: "baz",
+          state: "warn"
         }
-      }.to_json
+      ].to_json
       get "/status"
       expect(last_response.status).to eql(200)
-      expect(last_response.headers).to include({ "Content-Length" => "68", "Content-type" => "application/json" })
+      expect(last_response.headers).to include({ "Content-Length" => "89", "Content-Type" => "application/json" })
       expect(last_response.body).to eql(expected_body)
     end
-  end
 
-  context "when the request is made to '/status/'" do
-    before do
-      Rack::Vitals.register_checks do
-        check "foo", critical: true do
-          up_state
-        end
-
-        check "bar" do
-          down_state
-        end
-
-        check "baz" do
-          warn_state
-        end
+    context "when the status request has a trailing slash" do
+      it "responds with a json object" do
+        expected_body = [
+          {
+            name: "foo",
+            state: "up"
+          },
+          {
+            name: "bar",
+            state: "down"
+          },
+          {
+            name: "baz",
+            state: "warn"
+          }
+        ].to_json
+        get "/status/"
+        expect(last_response.status).to eql(200)
+        expect(last_response.headers).to include({ "Content-Length" => "89", "Content-Type" => "application/json" })
+        expect(last_response.body).to eql(expected_body)
       end
-    end
-
-    it "responds with a json object" do
-      expected_body = {
-        foo: {
-          state: :up
-        },
-        bar: {
-          state: :down
-        },
-        baz: {
-          state: :warn
-        }
-      }.to_json
-      get "/status/"
-      expect(last_response.status).to eql(200)
-      expect(last_response.headers).to include({ "Content-Length" => "68", "Content-type" => "application/json" })
-      expect(last_response.body).to eql(expected_body)
     end
   end
 
