@@ -78,12 +78,14 @@ end
 Declare one `Rack::Vitals.register_checks` block to hold all of your declared checks.
 
 * ##### `register_checks`
+
   * `register_checks` takes a block where all `check` definitions are
     declared.
 
 You can define a new check by using the `check` method within the block.
 
 * ##### `check`
+
   * `check` needs a name to identify it in the `/status` check.
     ```ruby
     check "name of check here" do
@@ -91,8 +93,8 @@ You can define a new check by using the `check` method within the block.
     ```
 
   * You can pass an optional argument of `critical: true` to have the check run
-  for each `/health` request. This will cause the `/health` request to fail if a
-  `down` is reached.
+    for each `/health` request. This will cause the `/health` request to fail if a
+    `down` is reached.
     ```ruby
     check "name of check here", critical: true do
     end
