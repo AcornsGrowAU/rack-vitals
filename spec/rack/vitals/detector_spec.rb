@@ -64,7 +64,7 @@ describe ::Rack::Vitals::Detector do
     before do
       allow(registrar).to receive(:all_checks).and_return(check_collection)
       allow(::Rack::Vitals::CheckEvaluator).to receive(:run).and_return check_result
-      allow(subject).to receive(:add_formatted_check_to_response_body).with(check_result).and_return(formatted_check)
+      allow(subject).to receive(:format_check_to_response_body).with(check_result).and_return(formatted_check)
     end
 
     it "gets all the required checks for status" do
@@ -83,7 +83,7 @@ describe ::Rack::Vitals::Detector do
     end
 
     it "formats the check results for the response body" do
-      expect(subject).to receive(:add_formatted_check_to_response_body).with(check_result)
+      expect(subject).to receive(:format_check_to_response_body).with(check_result)
       subject.generate_status_response
     end
 
@@ -94,11 +94,11 @@ describe ::Rack::Vitals::Detector do
     end
   end
 
-  describe "#add_formatted_check_to_response_body" do
+  describe "#format_check_to_response_body" do
     let(:check_result) { instance_double ::Rack::Vitals::CheckResult, name: "foo", state: :up }
 
-    it "adds the formatted hash to the response body" do
-      result = subject.add_formatted_check_to_response_body(check_result)
+    it "formats hash to the response body" do
+      result = subject.format_check_to_response_body(check_result)
       expect(result).to eql({ name: "foo", state: :up })
     end
   end
