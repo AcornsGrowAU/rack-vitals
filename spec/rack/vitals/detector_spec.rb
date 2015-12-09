@@ -58,29 +58,13 @@ describe ::Rack::Vitals::Detector do
     let(:check) { instance_double ::Rack::Vitals::Check }
     let(:check_collection) { [check] }
     let(:check_result) { instance_double ::Rack::Vitals::CheckResult }
-    let(:response_body) { { foo: { state: :up }, bar: { state: :down } } }
+    let(:formatted_check) { { name: "foo", state: "up" } }
+    let(:response_body) { [{ name: "foo", state: "up" }] }
 
     before do
       allow(registrar).to receive(:all_checks).and_return(check_collection)
       allow(::Rack::Vitals::CheckEvaluator).to receive(:run).and_return check_result
-      allow(subject).to receive(:add_formatted_check_to_response_body).with(check_result)
-      allow(subject).to receive(:response_body).and_return(response_body)
-    end
-
-    context "when the detector has already generated a response body" do
-      it "resets the response body to be empty" do
-        allow(subject).to receive(:response_body).and_return ["some previous check"]
-        expect(subject).to receive(:reset_response_body)
-        subject.generate_status_response
-      end
-    end
-
-    context "when the detector has not already generated a response body" do
-      it "doesn't reset the response body" do
-        allow(subject).to receive(:response_body).and_return []
-        expect(subject).not_to receive(:reset_response_body)
-        subject.generate_status_response
-      end
+      allow(subject).to receive(:add_formatted_check_to_response_body).with(check_result).and_return(formatted_check)
     end
 
     it "gets all the required checks for status" do
@@ -88,8 +72,8 @@ describe ::Rack::Vitals::Detector do
       subject.generate_status_response
     end
 
-    it "iterates over each check" do
-      expect(check_collection).to receive(:each)
+    it "iterates over each check in the array" do
+      expect(check_collection).to receive(:map)
       subject.generate_status_response
     end
 
@@ -104,6 +88,7 @@ describe ::Rack::Vitals::Detector do
     end
 
     it "converts the response body as json" do
+      allow(check_collection).to receive(:map).and_return(response_body)
       expect(response_body).to receive(:to_json)
       subject.generate_status_response
     end
@@ -113,34 +98,8 @@ describe ::Rack::Vitals::Detector do
     let(:check_result) { instance_double ::Rack::Vitals::CheckResult, name: "foo", state: :up }
 
     it "adds the formatted hash to the response body" do
-      expect(subject.response_body).to receive(:<<).with({ name: "foo", state: :up })
-      subject.add_formatted_check_to_response_body(check_result)
-    end
-  end
-
-  describe "#response_body" do
-    context "when it's called for the first time" do
-      it "creates an empty hash" do
-        result = subject.response_body
-        expect(result).to eql([])
-      end
-    end
-
-    context "when it's called multiple times" do
-      it "returns the memoized array" do
-        subject.response_body << { foo: "stuff"}
-        result = subject.response_body
-        expect(result).to eql([{ foo: "stuff" }])
-      end
-    end
-  end
-
-  describe "#reset_response_body" do
-    it "resets the response body to an empty hash" do
-      subject.instance_variable_set(:@response_body, ["something here"])
-      subject.reset_response_body
-      result = subject.instance_variable_get(:@response_body)
-      expect(result).to eql []
+      result = subject.add_formatted_check_to_response_body(check_result)
+      expect(result).to eql({ name: "foo", state: :up })
     end
   end
 end
