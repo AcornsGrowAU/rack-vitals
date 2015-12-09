@@ -16,6 +16,10 @@ module Rack
     end
 
     def call(env)
+      dup._call(env)
+    end
+
+    def _call(env)
       request = Rack::Request.new(env)
       if self.requested_health_path?(request.path)
         return self.health_vitals_response
