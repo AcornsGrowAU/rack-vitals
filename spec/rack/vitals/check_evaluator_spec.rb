@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe ::Rack::Vitals::CheckEvaluator do
   let(:procedure) { Proc.new { "foo" } }
-  let(:check) { instance_double ::Rack::Vitals::Check, procedure: procedure }
+  let(:check) { instance_double ::Rack::Vitals::Check, name: "bar", procedure: procedure }
   let(:check_result) { instance_double ::Rack::Vitals::CheckResult }
 
   before do
@@ -11,7 +11,7 @@ describe ::Rack::Vitals::CheckEvaluator do
 
   describe ".run" do
     it "creates a check result object" do
-      expect(::Rack::Vitals::CheckResult).to receive(:new)
+      expect(::Rack::Vitals::CheckResult).to receive(:new).with("bar")
       described_class.run(check)
     end
 

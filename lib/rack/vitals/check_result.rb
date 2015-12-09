@@ -1,6 +1,9 @@
 module Rack
   class Vitals::CheckResult
-    def initialize
+    attr_reader :name, :state
+
+    def initialize(name)
+      @name = name
       @state = :down
     end
 

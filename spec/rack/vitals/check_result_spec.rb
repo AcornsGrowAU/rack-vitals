@@ -1,9 +1,31 @@
 require "spec_helper"
 
 describe ::Rack::Vitals::CheckResult do
+  let(:check) { instance_double ::Rack::Vitals::Check, name: "bar" }
+  subject { ::Rack::Vitals::CheckResult.new(check.name) }
+
   describe "#initialize" do
     it "sets the default state to down" do
       result = subject.instance_variable_get(:@state)
+      expect(result).to eql :down
+    end
+
+    it "sets the name of the check that the results are for" do
+      result = subject.instance_variable_get(:@name)
+      expect(result).to eql "bar"
+    end
+  end
+
+  describe "#name" do
+    it "returns the name given for the check" do
+      result = subject.name
+      expect(result).to eql "bar"
+    end
+  end
+
+  describe "#state" do
+    it "returns the result state of the check" do
+      result = subject.state
       expect(result).to eql :down
     end
   end

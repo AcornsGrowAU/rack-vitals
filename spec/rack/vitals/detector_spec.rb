@@ -53,4 +53,53 @@ describe ::Rack::Vitals::Detector do
       end
     end
   end
+
+  describe "#generate_status_response" do
+    let(:check) { instance_double ::Rack::Vitals::Check }
+    let(:check_collection) { [check] }
+    let(:check_result) { instance_double ::Rack::Vitals::CheckResult }
+    let(:formatted_check) { { name: "foo", state: "up" } }
+    let(:response_body) { [{ name: "foo", state: "up" }] }
+
+    before do
+      allow(registrar).to receive(:all_checks).and_return(check_collection)
+      allow(::Rack::Vitals::CheckEvaluator).to receive(:run).and_return check_result
+      allow(subject).to receive(:format_check_to_response_body).with(check_result).and_return(formatted_check)
+    end
+
+    it "gets all the required checks for status" do
+      expect(registrar).to receive(:all_checks).and_return(check_collection)
+      subject.generate_status_response
+    end
+
+    it "iterates over each check in the array" do
+      expect(check_collection).to receive(:map)
+      subject.generate_status_response
+    end
+
+    it "runs the check evaluator" do
+      expect(::Rack::Vitals::CheckEvaluator).to receive(:run).with(check)
+      subject.generate_status_response
+    end
+
+    it "formats the check results for the response body" do
+      expect(subject).to receive(:format_check_to_response_body).with(check_result)
+      subject.generate_status_response
+    end
+
+    it "converts the response body as json" do
+      allow(check_collection).to receive(:map).and_return(response_body)
+      expect(response_body).to receive(:to_json)
+      subject.generate_status_response
+    end
+  end
+
+  describe "#format_check_to_response_body" do
+    let(:check_result) { instance_double ::Rack::Vitals::CheckResult, name: "foo", state: :up }
+
+    it "formats hash to the response body" do
+      result = subject.format_check_to_response_body(check_result)
+      expect(result).to eql({ name: "foo", state: :up })
+    end
+  end
 end

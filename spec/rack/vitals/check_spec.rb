@@ -28,4 +28,12 @@ describe Rack::Vitals::Check do
       expect(result).to eql block
     end
   end
+
+  describe "#name" do
+    it "returns the name that belongs to the check" do
+      check = described_class.new("some name")
+      result = check.name
+      expect(result).to eql "some name"
+    end
+  end
 end
