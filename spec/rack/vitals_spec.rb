@@ -14,6 +14,23 @@ describe Rack::Vitals do
     end
   end
 
+  describe "#call" do
+    let(:env) { double("env") }
+    let(:dup_middleware) { double("duplicated middleware") }
+
+    it "duplicates itself" do
+      allow(dup_middleware).to receive(:_call).with(env)
+      expect(subject).to receive(:dup).and_return(dup_middleware)
+      subject.call(env)
+    end
+
+    it "executes the duplicated instance of call" do
+      allow(subject).to receive(:dup).and_return(dup_middleware)
+      expect(dup_middleware).to receive(:_call).with(env)
+      subject.call(env)
+    end
+  end
+
   describe "#_call" do
     let(:env) { double }
     let(:request) { double "Request", path: "/somepath" }
