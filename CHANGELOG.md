@@ -6,4 +6,6 @@ versions as well as provide a rough history.
 
 #### Next Release
 
+#### v0.2.0 2015-12-9
 - You can add "checks" for `/health` by using the `critical: true` flag
+- You can see a report of all your checks through `/status`.
