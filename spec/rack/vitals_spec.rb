@@ -82,24 +82,24 @@ describe Rack::Vitals do
 
         it "checks if the requested path is for the status check" do
           expect(subject).to receive(:requested_status_path?).with(request.path).and_return(true)
-          subject.call env
+          subject._call env
         end
 
         it "gets the status vitals response" do
           expect(subject).to receive(:status_vitals_response)
-          subject.call env
+          subject._call env
         end
 
         it "returns the status vitals response" do
           valid_response = double
           allow(subject).to receive(:status_vitals_response).and_return(valid_response)
-          result = subject.call env
+          result = subject._call env
           expect(result).to eql valid_response
         end
 
         it "does not call the rest of the middleware stack" do
           expect(app).not_to receive(:call)
-          subject.call env
+          subject._call env
         end
       end
 
@@ -111,13 +111,13 @@ describe Rack::Vitals do
 
         it "passes the request to the the next middleware" do
           expect(app).to receive(:call).with env
-          subject.call env
+          subject._call env
         end
 
         it "returns the result of the next middleware layer" do
           middleware_response = double
           allow(app).to receive(:call).and_return(middleware_response)
-          result = subject.call env
+          result = subject._call env
           expect(result).to eql middleware_response
         end
       end
