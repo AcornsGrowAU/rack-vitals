@@ -1,10 +1,10 @@
+require "rack"
+require "rack/vitals/version"
 require "rack/vitals/check"
 require "rack/vitals/check_evaluator"
 require "rack/vitals/check_registrar"
 require "rack/vitals/check_result"
 require "rack/vitals/detector"
-require "rack/vitals/version"
-require "rack"
 
 module Rack
   class Vitals
