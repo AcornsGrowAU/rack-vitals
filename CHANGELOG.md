@@ -5,6 +5,8 @@ This is intended to help keep people informed about notable changes between
 versions as well as provide a rough history.
 
 #### Next Release
+
+#### v0.4.0 - 2015-12-20
 - Relax rack version dependency to >= 1.6 from ~> 1.6
 
 #### v0.3.0 - 2015-12-15
