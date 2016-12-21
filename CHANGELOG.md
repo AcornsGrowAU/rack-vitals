@@ -5,6 +5,7 @@ This is intended to help keep people informed about notable changes between
 versions as well as provide a rough history.
 
 #### Next Release
+- Relax rack version dependency to >= 1.6 from ~> 1.6
 
 #### v0.3.0 - 2015-12-15
 - Fix load order issue that was preventing the gem from working in an app
