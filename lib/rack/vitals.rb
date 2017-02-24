@@ -21,9 +21,9 @@ module Rack
 
     def _call(env)
       request = Rack::Request.new(env)
-      if self.requested_health_path?(request.path)
+      if self.requested_health_path?(request.path_info)
         return self.health_vitals_response
-      elsif self.requested_status_path?(request.path)
+      elsif self.requested_status_path?(request.path_info)
         return self.status_vitals_response
       else
         return @app.call(env)

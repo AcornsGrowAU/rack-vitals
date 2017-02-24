@@ -33,7 +33,7 @@ describe Rack::Vitals do
 
   describe "#_call" do
     let(:env) { double }
-    let(:request) { double "Request", path: "/somepath" }
+    let(:request) { double "Request", path_info: "/somepath" }
 
     before do
       allow(Rack::Request).to receive(:new).and_return request
@@ -47,7 +47,7 @@ describe Rack::Vitals do
     end
 
     it "checks if the requested path is for the health check" do
-      expect(subject).to receive(:requested_health_path?).with(request.path).and_return(true)
+      expect(subject).to receive(:requested_health_path?).with(request.path_info).and_return(true)
       subject._call env
     end
 
@@ -77,11 +77,11 @@ describe Rack::Vitals do
     context "when the requested path is not for the health check" do
       context "when the request path is for the status check" do
         before do
-          allow(subject).to receive(:requested_status_path?).with(request.path).and_return(true)
+          allow(subject).to receive(:requested_status_path?).with(request.path_info).and_return(true)
         end
 
         it "checks if the requested path is for the status check" do
-          expect(subject).to receive(:requested_status_path?).with(request.path).and_return(true)
+          expect(subject).to receive(:requested_status_path?).with(request.path_info).and_return(true)
           subject._call env
         end
 
@@ -105,7 +105,7 @@ describe Rack::Vitals do
 
       context "when the request path is not for the status check" do
         before do
-          allow(request).to receive(:path).and_return("/foo")
+          allow(request).to receive(:path_info).and_return("/foo")
           allow(subject).to receive(:requested_health_path?).and_return(false)
         end
 
