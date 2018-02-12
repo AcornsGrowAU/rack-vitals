@@ -6,7 +6,8 @@ versions as well as provide a rough history.
 
 #### Next Release
 
-- Use ENV['PATH_INFO'] instead of ENV['PATH']
+#### v0.5.0 - 2017-02-24
+- Use ENV['PATH_INFO'] instead of request path
 
 #### v0.4.0 - 2015-12-20
 - Relax rack version dependency to >= 1.6 from ~> 1.6
